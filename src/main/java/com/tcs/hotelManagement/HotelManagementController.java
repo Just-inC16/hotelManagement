@@ -1,5 +1,7 @@
 package com.tcs.hotelManagement;
 
+import java.util.Optional;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,9 +26,18 @@ public class HotelManagementController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getPaymentById(@PathVariable Long id) {
-		HotelManagement hotelManagementById = hotelManagementRepository.getReferenceById(id);
-		HotelManagement hotelManagementDto = new HotelManagement(hotelManagementById.getId(),
-				hotelManagementById.getName(), hotelManagementById.getRoomNumber(), hotelManagementById.getStatus());
-		return ResponseEntity.ok(hotelManagementDto);
+//		HotelManagement hotelManagementById = hotelManagementRepository.getReferenceById(id);
+//		HotelManagement hotelManagementDto = new HotelManagement(hotelManagementById.getId(),
+//				hotelManagementById.getName(), hotelManagementById.getRoomNumber(), hotelManagementById.getStatus());
+//		return ResponseEntity.ok(hotelManagementDto);
+		Optional<HotelManagement> hotelManagementById = hotelManagementRepository.findById(id);
+		if (hotelManagementById.isPresent()) {
+			HotelManagement hotelManagement = hotelManagementById.get();
+			HotelManagement hotelManagementDto = new HotelManagement(hotelManagement.getId(), hotelManagement.getName(),
+					hotelManagement.getRoomNumber(), hotelManagement.getStatus());
+			return ResponseEntity.ok(hotelManagementDto);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
 	}
 }
