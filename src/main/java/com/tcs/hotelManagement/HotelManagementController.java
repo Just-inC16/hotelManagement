@@ -1,5 +1,6 @@
 package com.tcs.hotelManagement;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class HotelManagementController {
 		if (hotelManagementById.isPresent()) {
 			HotelManagement hotelManagement = hotelManagementById.get();
 			HotelManagement hotelManagementDto = new HotelManagement(hotelManagement.getId(), hotelManagement.getName(),
-					hotelManagement.getRoomNumber(), hotelManagement.getStatus());
+					hotelManagement.getRoomNumber(), hotelManagement.getStatus(), hotelManagement.getAmount());
 			return ResponseEntity.ok(hotelManagementDto);
 
 		} else {
@@ -40,15 +41,16 @@ public class HotelManagementController {
 	}
 
 	@PutMapping("/book/{id}")
-	public ResponseEntity<String> bookHotelRoom(@PathVariable Long id) {
+	public ResponseEntity<BigDecimal> bookHotelRoom(@PathVariable Long id) {
 		Optional<HotelManagement> hotelRoomById = hotelManagementRepository.findById(id);
 		if (hotelRoomById.isPresent()) {
 			HotelManagement hotelManagement = hotelRoomById.get();
 			Status hotelRoomStatus = hotelManagement.getStatus();
+			BigDecimal hotelRoomAmount = hotelManagement.getAmount();
 			if (hotelRoomStatus == Status.EMPTY) {
 				hotelManagement.setStatus(Status.BOOKED);
 				hotelManagementRepository.save(hotelManagement);
-				return ResponseEntity.ok("Hotel room was booked.");
+				return ResponseEntity.ok(hotelRoomAmount);
 			} else {
 				return ResponseEntity.status(409).build();
 			}

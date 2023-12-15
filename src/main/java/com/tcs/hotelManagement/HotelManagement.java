@@ -1,5 +1,7 @@
 package com.tcs.hotelManagement;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,5 +24,6 @@ public class HotelManagement {
 	private String name;
 	private Integer roomNumber;
 	private Status status;
+	private BigDecimal amount;
 
 }
