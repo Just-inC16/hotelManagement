@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,6 +33,32 @@ public class HotelManagementController {
 			HotelManagement hotelManagementDto = new HotelManagement(hotelManagement.getId(), hotelManagement.getName(),
 					hotelManagement.getRoomNumber(), hotelManagement.getStatus());
 			return ResponseEntity.ok(hotelManagementDto);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+	@PutMapping("/book/{id}")
+	public ResponseEntity<String> bookHotelRoom(@PathVariable Long id) {
+		Optional<HotelManagement> hotelRoomById = hotelManagementRepository.findById(id);
+		if (hotelRoomById.isPresent()) {
+			HotelManagement hotelManagement = hotelRoomById.get();
+			hotelManagement.setStatus(Status.BOOKED);
+			hotelManagementRepository.save(hotelManagement);
+			return ResponseEntity.ok("Hotel room was booked.");
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+	@PutMapping("/unbook/{id}")
+	public ResponseEntity<String> unbookHotelRoom(@PathVariable Long id) {
+		Optional<HotelManagement> hotelRoomById = hotelManagementRepository.findById(id);
+		if (hotelRoomById.isPresent()) {
+			HotelManagement hotelManagement = hotelRoomById.get();
+			hotelManagement.setStatus(Status.EMPTY);
+			hotelManagementRepository.save(hotelManagement);
+			return ResponseEntity.ok("Hotel room was unbooked.");
 		} else {
 			return ResponseEntity.notFound().build();
 		}
