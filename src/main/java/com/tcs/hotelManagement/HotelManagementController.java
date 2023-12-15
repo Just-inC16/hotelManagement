@@ -33,6 +33,7 @@ public class HotelManagementController {
 			HotelManagement hotelManagementDto = new HotelManagement(hotelManagement.getId(), hotelManagement.getName(),
 					hotelManagement.getRoomNumber(), hotelManagement.getStatus());
 			return ResponseEntity.ok(hotelManagementDto);
+
 		} else {
 			return ResponseEntity.notFound().build();
 		}
@@ -43,12 +44,18 @@ public class HotelManagementController {
 		Optional<HotelManagement> hotelRoomById = hotelManagementRepository.findById(id);
 		if (hotelRoomById.isPresent()) {
 			HotelManagement hotelManagement = hotelRoomById.get();
-			hotelManagement.setStatus(Status.BOOKED);
-			hotelManagementRepository.save(hotelManagement);
-			return ResponseEntity.ok("Hotel room was booked.");
+			Status hotelRoomStatus = hotelManagement.getStatus();
+			if (hotelRoomStatus == Status.EMPTY) {
+				hotelManagement.setStatus(Status.BOOKED);
+				hotelManagementRepository.save(hotelManagement);
+				return ResponseEntity.ok("Hotel room was booked.");
+			} else {
+				return ResponseEntity.status(409).build();
+			}
 		} else {
 			return ResponseEntity.notFound().build();
 		}
+
 	}
 
 	@PutMapping("/unbook/{id}")
@@ -56,9 +63,14 @@ public class HotelManagementController {
 		Optional<HotelManagement> hotelRoomById = hotelManagementRepository.findById(id);
 		if (hotelRoomById.isPresent()) {
 			HotelManagement hotelManagement = hotelRoomById.get();
-			hotelManagement.setStatus(Status.EMPTY);
-			hotelManagementRepository.save(hotelManagement);
-			return ResponseEntity.ok("Hotel room was unbooked.");
+			Status hotelRoomStatus = hotelManagement.getStatus();
+			if (hotelRoomStatus == Status.BOOKED) {
+				hotelManagement.setStatus(Status.EMPTY);
+				hotelManagementRepository.save(hotelManagement);
+				return ResponseEntity.ok("Hotel room was unbooked.");
+			} else {
+				return ResponseEntity.status(409).build();
+			}
 		} else {
 			return ResponseEntity.notFound().build();
 		}
