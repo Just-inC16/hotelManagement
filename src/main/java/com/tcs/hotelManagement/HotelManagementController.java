@@ -25,11 +25,7 @@ public class HotelManagementController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getPaymentById(@PathVariable Long id) {
-//		HotelManagement hotelManagementById = hotelManagementRepository.getReferenceById(id);
-//		HotelManagement hotelManagementDto = new HotelManagement(hotelManagementById.getId(),
-//				hotelManagementById.getName(), hotelManagementById.getRoomNumber(), hotelManagementById.getStatus());
-//		return ResponseEntity.ok(hotelManagementDto);
+	public ResponseEntity<HotelManagement> isHotelIdPresent(@PathVariable Long id) {
 		Optional<HotelManagement> hotelManagementById = hotelManagementRepository.findById(id);
 		if (hotelManagementById.isPresent()) {
 			HotelManagement hotelManagement = hotelManagementById.get();
